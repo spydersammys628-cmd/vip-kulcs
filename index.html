@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIP Kulcs Lekérése</title>
+    <style>
+        body { background: #0c0a1d; color: #fff; font-family: sans-serif; text-align: center; padding: 40px 20px; }
+        .box { background: #161230; border: 2px solid #00ffcc; padding: 20px; border-radius: 12px; max-width: 320px; margin: auto; box-shadow: 0 0 20px rgba(0,255,204,0.3); }
+        h3 { color: #00ffcc; margin-bottom: 10px; }
+        .key { font-size: 18px; font-weight: bold; color: #ff007f; margin: 15px 0; background: #080511; padding: 10px; border-radius: 8px; word-break: break-all; }
+        button { background: linear-gradient(135deg, #ff007f, #00ffcc); color: #fff; border: none; padding: 12px; width: 100%; font-weight: bold; border-radius: 8px; cursor: pointer; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h3>VIP KULCS</h3>
+        <p>A mai óra hivatalos kulcsa:</p>
+        <div class="key" id="key-div">Betöltés...</div>
+        <button onclick="copyKey()">KULCS MÁSOLÁSA</button>
+    </div>
+
+    <script>
+        // ITT ÍRHATOD ÁT, HOGY MIVEL KEZDŐDJÖN A KULCS:
+        const ELOTAG = "FERIKE-VIP-";
+
+        function generalKulcs() {
+            const ido = new Date();
+            const ora = ido.getHours();
+            const nap = ido.getDate();
+            return ELOTAG + (ora * 55 + nap * 10);
+        }
+
+        const aktualisKulcs = generalKulcs();
+        document.getElementById('key-div').innerText = aktualisKulcs;
+
+        function copyKey() {
+            navigator.clipboard.writeText(aktualisKulcs);
+            alert("Kulcs sikeresen másolva!");
+        }
+    </script>
+</body>
+</html>
