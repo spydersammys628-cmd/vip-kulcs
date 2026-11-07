@@ -3,25 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VIP Kulcs Lekérése</title>
+    <title>VIP Kulcs & Free Fire Panel</title>
     <style>
-        body { background: #0c0a1d; color: #fff; font-family: sans-serif; text-align: center; padding: 40px 20px; }
-        .box { background: #161230; border: 2px solid #00ffcc; padding: 20px; border-radius: 12px; max-width: 320px; margin: auto; box-shadow: 0 0 20px rgba(0,255,204,0.3); }
+        body { background: #0c0a1d; color: #fff; font-family: sans-serif; text-align: center; padding: 20px; overflow: hidden; margin: 0; }
+        .box { background: #161230; border: 2px solid #00ffcc; padding: 20px; border-radius: 12px; max-width: 320px; margin: 20px auto; box-shadow: 0 0 20px rgba(0,255,204,0.3); }
         h3 { color: #00ffcc; margin-bottom: 10px; }
         .key { font-size: 18px; font-weight: bold; color: #ff007f; margin: 15px 0; background: #080511; padding: 10px; border-radius: 8px; word-break: break-all; }
-        button { background: linear-gradient(135deg, #ff007f, #00ffcc); color: #fff; border: none; padding: 12px; width: 100%; font-weight: bold; border-radius: 8px; cursor: pointer; font-size: 14px; }
+        button { background: linear-gradient(135deg, #ff007f, #00ffcc); color: #fff; border: none; padding: 12px; width: 100%; font-weight: bold; border-radius: 8px; cursor: pointer; font-size: 14px; margin-top: 10px; }
+        
+        .floating-panel {
+            position: absolute;
+            cursor: grab;
+            user-select: none;
+            z-index: 1000;
+            touch-action: none;
+        }
+        
+        #princess-panel {
+            top: 100px;
+            left: 20px;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 2px solid #ff007f;
+            overflow: hidden;
+            background: #000;
+            box-shadow: 0 0 10px rgba(255,0,127,0.5);
+        }
+        #princess-panel img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center top;
+        }
+
+        #headshot-panel {
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(22, 18, 48, 0.9);
+            border: 2px solid #00ffcc;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            color: #00ffcc;
+            font-size: 14px;
+            box-shadow: 0 0 10px rgba(0,255,204,0.4);
+        }
     </style>
 </head>
 <body>
+
+    <div id="princess-panel" class="floating-panel">
+        <img src="https://i.ibb.co/689L354/e9de4a38-d659-4d09-9ca1-cd063d2556ee.jpg" alt="Hercegnő">
+    </div>
+
+    <div id="headshot-panel" class="floating-panel">
+        🎯 50% HEADSHOT
+    </div>
+
     <div class="box">
         <h3>VIP KULCS</h3>
         <p>A mai óra hivatalos kulcsa:</p>
         <div class="key" id="key-div">Betöltés...</div>
         <button onclick="copyKey()">KULCS MÁSOLÁSA</button>
+        <button onclick="openFreeFire()" style="background: linear-gradient(135deg, #ff512f, #f09819);">INDÍTSD A FREE FIRE-T</button>
     </div>
 
     <script>
-        // ITT ÍRHATOD ÁT, HOGY MIVEL KEZDŐDJÖN A KULCS:
         const ELOTAG = "FERIKE-VIP-";
 
         function generalKulcs() {
@@ -38,6 +87,72 @@
             navigator.clipboard.writeText(aktualisKulcs);
             alert("Kulcs sikeresen másolva!");
         }
+
+        function openFreeFire() {
+            window.location.href = "com.dts.freefireth://";
+            setTimeout(() => {
+                alert("Ha a Free Fire nem indult el, nyisd meg kézzel!");
+            }, 1000);
+        }
+
+        function makeDraggable(elm) {
+            let posX = 0, posY = 0, mouseX = 0, mouseY = 0;
+
+            elm.onmousedown = dragMouseDown;
+            elm.ontouchstart = dragTouchStart;
+
+            function dragMouseDown(e) {
+                e.preventDefault();
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                document.onmouseup = closeDragElement;
+                document.onmousemove = elementDrag;
+            }
+
+            function elementDrag(e) {
+                e.preventDefault();
+                posX = mouseX - e.clientX;
+                posY = mouseY - e.clientY;
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                elm.style.top = (elm.offsetTop - posY) + "px";
+                elm.style.left = (elm.offsetLeft - posX) + "px";
+                elm.style.transform = "none";
+            }
+
+            function dragTouchStart(e) {
+                if(e.touches.length === 1) {
+                    mouseX = e.touches[0].clientX;
+                    mouseY = e.touches[0].clientY;
+                    document.ontouchend = closeDragElement;
+                    document.ontouchmove = elementTouchDrag;
+                }
+            }
+
+            function elementTouchDrag(e) {
+                if(e.touches.length === 1) {
+                    let clientX = e.touches[0].clientX;
+                    let clientY = e.touches[0].clientY;
+                    posX = mouseX - clientX;
+                    posY = mouseY - clientY;
+                    mouseX = clientX;
+                    mouseY = clientY;
+                    elm.style.top = (elm.offsetTop - posY) + "px";
+                    elm.style.left = (elm.offsetLeft - posX) + "px";
+                    elm.style.transform = "none";
+                }
+            }
+
+            function closeDragElement() {
+                document.onmouseup = null;
+                document.onmousemove = null;
+                document.ontouchend = null;
+                document.ontouchmove = null;
+            }
+        }
+
+        makeDraggable(document.getElementById("princess-panel"));
+        makeDraggable(document.getElementById("headshot-panel"));
     </script>
 </body>
 </html>
